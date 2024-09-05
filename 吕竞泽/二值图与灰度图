@@ -1,0 +1,66 @@
+from skimage.color import rgb2gray
+import numpy as np
+import matplotlib.pyplot as plt
+from PIL import Image
+import cv2
+
+"""
+cv2.imread(filepath,flags)
+
+该函数有两个形参
+filepath：图片的相对路径
+flags:读取图片的形式
+其值包括：
+cv2.IMREAD_COLOR:默认参数读入一副彩色图片，忽略alpha通道，也可以直接写1
+cv2.IMREAD_GRAYSCALE:读入灰度图片，可以直接写0
+cv2.IMREAD_UNCHANGED:读取完整的图片，包括alpha通道，可以直接写-1
+
+注意：该函数保存图片像素点的格式为BGR
+"""
+
+# #读取一张图片并获得其长和宽
+img = cv2.imread('lenna.png')
+h,w = img.shape[:2]
+# # print(img.shape)
+# # print("\n")
+# # print(img)
+# # print("\n")
+#
+# #创建一张空白图片也就是一个形状与图片读取获得的相同的但是值全为0的张量
+# '''
+# 使用numpy.zeros(shape,dtype,order)
+# shape:形状
+# dtype:数据类型，可选参数，默认为numpy.float64
+# order：'c'代表行优先，'f'代表列优先
+# 该函数会返回一个给定形状和类型的数组
+# '''
+img_gray = np.zeros([h,w],img.dtype)
+# # print(img_gray.shape)
+# # print("\n")
+# # print(img_gray)
+#
+# #将img从BGR转化为RGB
+img= cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+# # 进行gray化
+for i in range(h):
+    for j in range(w):
+        g = img[i,j]
+        img_gray[i,j] = int(g[0]*0.11+g[1]*0.59+g[2]*0.3)
+print(img_gray)
+plt.subplot(221)
+plt.imshow(img_gray,cmap='gray')
+
+
+
+img_bin = np.zeros(img.shape[:2],img.dtype)
+r,l = img_gray.shape[:2]
+for i in range(r):
+    for j in range(l):
+        if(img_gray[i,j] <= (255/2)):
+            img_bin[i,j]=0
+        else:
+            img_bin[i,j]=1
+print(img_bin)
+plt.subplot(222)
+plt.imshow(img_bin,cmap='gray')
+plt.show()
